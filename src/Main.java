@@ -25,12 +25,13 @@ public class Main {
 
 
     public static void main(String[] args) {
-        String s = sc.next();
-        for(int i=0; i<s.length(); i++){
-            if(Character.isUpperCase(s.charAt(i))){
-                System.out.println(i+1); break;
-            }
-        }
+        String[] s = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
+        List<String> ar = new ArrayList<>(Arrays.asList(s));
+
+        String ss = sc.next();
+
+        System.out.println(5 - ar.indexOf(ss));
+
     }
 }
 /*
@@ -44,6 +45,9 @@ public class Main {
         StringBuilder sb = new StringBuilder(str);
         String reverseStr = sb.reverse().toString();
         char ch = str.charAt(index);
+
+        String[] s = {'abc', "def", "fd"};
+        List<String> ar = new ArrayList<>(Arrays.asList(s));
 
         Collections.reverse(arr);
 
