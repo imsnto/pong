@@ -56,7 +56,15 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
     public void checkCollision(){
+        if(paddle1.y <= 0)
+            paddle1.y = 0;
+        if(paddle1.y >= (GAME_HEIGHT-PADDLE_HEIGHT))
+            paddle1.y = GAME_HEIGHT-PADDLE_HEIGHT;
 
+        if(paddle2.y <= 0 )
+            paddle2.y = 0;
+        if(paddle2.y >= (GAME_HEIGHT-PADDLE_HEIGHT))
+            paddle2.y = GAME_HEIGHT-PADDLE_HEIGHT;
     }
 
     public class AL extends KeyAdapter{
