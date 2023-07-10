@@ -23,7 +23,6 @@ public class GamePanel extends JPanel implements Runnable {
     Ball ball;
     Score score;
 
-
     GamePanel(){
         newPaddle();
         newBall();
@@ -33,12 +32,15 @@ public class GamePanel extends JPanel implements Runnable {
         this.setPreferredSize(SCREEN_SIZE);
         gameThread = new Thread(this);
         gameThread.start();
-        if(gameThread.isAlive()){
-            System.out.println("waiting");
-        }
-        else{
-            System.out.println("end");
-        }
+    }
+    public void startGame(){
+
+    }
+    public void restartGame() {
+        isRunning = true;
+        score.player1 = 0;
+        score.player2 = 0;
+        new GameFrame();
     }
     public void newBall(){
         Random random = new Random();
@@ -51,7 +53,32 @@ public class GamePanel extends JPanel implements Runnable {
     public void paint(Graphics g){
         Image image = createImage(getWidth(), getHeight());
         graphics = image.getGraphics();
-        draw(graphics);
+        if (!isRunning) {
+            // Clear the screen
+            graphics.setColor(Color.BLACK);
+            graphics.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+            // Display the winner's score
+            graphics.setColor(Color.WHITE);
+            graphics.setFont(new Font("Arial", Font.BOLD, 30));
+            String winnerScore;
+            if (score.player1 > score.player2) {
+                winnerScore = "Player 1 Wins! Score: " + score.player1;
+            } else {
+                winnerScore = "Player 2 Wins! Score: " + score.player2;
+            }
+            int stringWidth = graphics.getFontMetrics().stringWidth(winnerScore);
+            graphics.drawString(winnerScore, (GAME_WIDTH - stringWidth) / 2, GAME_HEIGHT / 2);
+
+            // Display restart and exit instructions
+            graphics.setFont(new Font("Arial", Font.BOLD, 20));
+            String instructions = "Press 'R' to restart or 'ESC' to exit.";
+            stringWidth = graphics.getFontMetrics().stringWidth(instructions);
+            graphics.drawString(instructions, (GAME_WIDTH - stringWidth) / 2, GAME_HEIGHT / 2 + 50);
+        } else {
+            // Draw the game elements
+            draw(graphics);
+        }
         g.drawImage(image, 0, 0, this);
     }
     public void draw(Graphics g){
@@ -113,6 +140,12 @@ public class GamePanel extends JPanel implements Runnable {
         public void keyPressed(KeyEvent e){
             paddle1.keyPressed(e);
             paddle2.keyPressed(e);
+
+            if (e.getKeyCode() == KeyEvent.VK_R && !isRunning) {
+                restartGame();
+            } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                System.exit(0);
+            }
         }
         public void keyReleased(KeyEvent e){
             paddle1.keyReleased(e);
@@ -128,7 +161,9 @@ public class GamePanel extends JPanel implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //if(Math.abs(score.player1 - score.player2) == 3) running = false;
+            if(Math.abs(score.player1 - score.player2) == 3) {
+                isRunning = false;
+            }
             move();
             checkCollision();
             repaint();
