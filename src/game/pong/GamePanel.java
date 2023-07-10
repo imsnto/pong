@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.SQLOutput;
 import java.util.Random;
 
 public class GamePanel extends JPanel implements Runnable {
+    public static boolean isRunning = true;
     static final int GAME_WIDTH = 1000;
     static final int GAME_HEIGHT = (int)(GAME_WIDTH * (5.0 / 9.0));
     static final Dimension SCREEN_SIZE = new Dimension(GAME_WIDTH, GAME_HEIGHT);
@@ -17,7 +17,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     Thread gameThread;
     Graphics graphics;
-    Random random;
     Paddle paddle1;
     Paddle paddle2;
 
@@ -34,6 +33,12 @@ public class GamePanel extends JPanel implements Runnable {
         this.setPreferredSize(SCREEN_SIZE);
         gameThread = new Thread(this);
         gameThread.start();
+        if(gameThread.isAlive()){
+            System.out.println("waiting");
+        }
+        else{
+            System.out.println("end");
+        }
     }
     public void newBall(){
         Random random = new Random();
@@ -69,7 +74,7 @@ public class GamePanel extends JPanel implements Runnable {
             ball.setYDirection(-ball.yVelocity);
         }
 
-        if(ball.x <= BALL_DIAMETER ) {
+        if(ball.x < BALL_DIAMETER ) {
             newPaddle();
             newBall();
             score.player2 ++;
@@ -83,7 +88,6 @@ public class GamePanel extends JPanel implements Runnable {
         if(paddle1.intersects(ball)){
             if(ball.xVelocity < 0)
                 ball.setXDirection(-ball.xVelocity);
-
         }
 
         if(paddle2.intersects(ball)){
@@ -118,22 +122,17 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        long lastTime = System.nanoTime();
-        double amountOfTicks = 60.0;
-        double ns = 1000000000 / amountOfTicks;
-        double delta = 0;
-        long  i = 0;
-        while(true){
-            long now = System.nanoTime();
-            i %= 100000000000000000L;
-            delta += (now - lastTime)/ns;
-            lastTime = now;
-            if(delta >= 1){
-                move();
-                checkCollision();
-                repaint();
-                delta--;
+        while(isRunning) {
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            //if(Math.abs(score.player1 - score.player2) == 3) running = false;
+            move();
+            checkCollision();
+            repaint();
         }
+
     }
 }
