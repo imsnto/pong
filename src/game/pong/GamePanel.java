@@ -8,6 +8,7 @@ import java.util.Random;
 
 public class GamePanel extends JPanel implements Runnable {
     public static boolean isRunning = true;
+    public static boolean isPause = false;
     static final int GAME_WIDTH = 1000;
     static final int GAME_HEIGHT = (int)(GAME_WIDTH * (5.0 / 9.0));
     static final Dimension SCREEN_SIZE = new Dimension(GAME_WIDTH, GAME_HEIGHT);
@@ -33,9 +34,6 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread = new Thread(this);
         gameThread.start();
     }
-    public void startGame(){
-
-    }
     public void restartGame() {
         isRunning = true;
         score.player1 = 0;
@@ -53,7 +51,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void paint(Graphics g){
         Image image = createImage(getWidth(), getHeight());
         graphics = image.getGraphics();
-        if (!isRunning) {
+        if (!isRunning  ) {
             // Clear the screen
             graphics.setColor(Color.BLACK);
             graphics.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -145,7 +143,13 @@ public class GamePanel extends JPanel implements Runnable {
                 restartGame();
             } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 System.exit(0);
+            }else if(e.getKeyCode() == KeyEvent.VK_SPACE && isPause){
+                isPause = false;
+            }else if(e.getKeyCode() == KeyEvent.VK_SPACE && !isPause){
+                isPause = true;
+                //gameThread.interrupt();
             }
+
         }
         public void keyReleased(KeyEvent e){
             paddle1.keyReleased(e);
@@ -155,18 +159,23 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
+
         while(isRunning) {
             try {
                 Thread.sleep(20);
+                if(isPause){
+                    while (isPause) Thread.sleep(100);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if(Math.abs(score.player1 - score.player2) == 3) {
+            if (Math.abs(score.player1 - score.player2) == 3) {
                 isRunning = false;
             }
             move();
             checkCollision();
             repaint();
+
         }
 
     }
