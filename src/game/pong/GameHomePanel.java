@@ -7,7 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class GameHomePanel extends JPanel {
     static final Dimension SCREEN_SIZE = new Dimension(1000, (int) (1000* (5.0 / 9.0)));
@@ -22,12 +24,7 @@ public class GameHomePanel extends JPanel {
 
         this.setFocusable(true);
         this.setPreferredSize(SCREEN_SIZE);
-        //this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        //this.setLayout(new CardLayout());
         this.setLayout(null);
-
-        ImageIcon playIcon = new ImageIcon("images/play.png");
-        ImageIcon settingIcon = new ImageIcon("images/help.jpg");
 
         playButton = new JButton("Play");
         helpButton = new JButton("Help");
@@ -49,9 +46,6 @@ public class GameHomePanel extends JPanel {
         exitButton.setBounds(400, 320, 200, 50);
 
 
-        //playButton.setIcon(playIcon);
-       // settingButton.setIcon(settingIcon);
-
         playButton.setBorderPainted(false);
         helpButton.setBorderPainted(false);
         highScoreButton.setBorderPainted(false);
@@ -65,7 +59,7 @@ public class GameHomePanel extends JPanel {
 
 
         try {
-            backgroundImage = ImageIO.read(new File("images/bg2.jpg")); // Replace "path_to_your_image_file.jpg" with the actual path to your image file
+            backgroundImage = ImageIO.read(new File("images/bg2.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,7 +67,7 @@ public class GameHomePanel extends JPanel {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                GameFrame frame = new GameFrame();
+                new GameFrame();
             }
         });
 
@@ -87,7 +81,7 @@ public class GameHomePanel extends JPanel {
         highScoreButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
+                showHighScore();
             }
         });
 
@@ -103,6 +97,18 @@ public class GameHomePanel extends JPanel {
         add(highScoreButton);
         add(exitButton);
     }
+    private void showHighScore(){
+        File file = new File("score.txt");
+        Scanner sc ;
+        try {
+            sc = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        int highScore = sc.nextInt();
+        String content = "High Score: " + Integer.toString(highScore);
+        JOptionPane.showMessageDialog(this, content, "High Score", JOptionPane.INFORMATION_MESSAGE);
+    }
 
     private void showInstructions() {
         // Display instructions in a dialog box
@@ -111,8 +117,8 @@ public class GameHomePanel extends JPanel {
                 "Up key - Use up arrow key to right-paddle move up\n" +
                 "Space key- Press space bar to pause/resume game\n" +
                 "Down key -  Press down arrow key to move right-paddle lower\n" +
-                "W key - Press W key to left-paddle move up\n" +
-                "S key - Press S Key to left paddle move lower" +
+                "'W' key - Press W key to left-paddle move up\n" +
+                "'S' key - Press S Key to left paddle move lower" +
                 "\nGet ready and enjoy the game!";
         JOptionPane.showMessageDialog(this, instructions, "Game Instructions", JOptionPane.INFORMATION_MESSAGE);
     }
@@ -122,8 +128,6 @@ public class GameHomePanel extends JPanel {
         super.paintComponent(g);
         //this.setBackground(Color.black);
         if (backgroundImage != null) {
-            int x = (this.getWidth() - backgroundImage.getWidth()) / 2;
-            int y = (this.getHeight() - backgroundImage.getHeight()) / 2;
             g.drawImage(backgroundImage, 0,0, null);
         }
 

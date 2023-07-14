@@ -18,6 +18,13 @@ public class Score extends Rectangle {
 
         g.drawString(String.valueOf(player1), (GAME_WIDTH/2)-85, 50);
         g.drawString(String.valueOf(player2), (GAME_WIDTH/2)+40, 50);
+
+        g.setColor(Color.blue);
+        g.setFont(new Font("Consolas", Font.PLAIN, 30));
+        g.drawString("Player: 1", 230, GAME_HEIGHT - 60);
+        g.setColor(Color.red);
+        g.drawString("Player: 2", 730, GAME_HEIGHT - 60);
+
     }
 
 

@@ -4,7 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
+import java.util.Scanner;
 
 public class GamePanel extends JPanel implements Runnable {
     public static boolean isRunning = true;
@@ -52,32 +57,69 @@ public class GamePanel extends JPanel implements Runnable {
         Image image = createImage(getWidth(), getHeight());
         graphics = image.getGraphics();
         if (!isRunning  ) {
-            // Clear the screen
-            graphics.setColor(Color.BLACK);
-            graphics.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
-            // Display the winner's score
-            graphics.setColor(Color.WHITE);
-            graphics.setFont(new Font("Arial", Font.BOLD, 30));
-            String winnerScore;
-            if (score.player1 > score.player2) {
-                winnerScore = "Player 1 Wins! Score: " + score.player1;
-            } else {
-                winnerScore = "Player 2 Wins! Score: " + score.player2;
-            }
-            int stringWidth = graphics.getFontMetrics().stringWidth(winnerScore);
-            graphics.drawString(winnerScore, (GAME_WIDTH - stringWidth) / 2, GAME_HEIGHT / 2);
-
-            // Display restart and exit instructions
-            graphics.setFont(new Font("Arial", Font.BOLD, 20));
-            String instructions = "Press 'R' to restart or 'ESC' to exit.";
-            stringWidth = graphics.getFontMetrics().stringWidth(instructions);
-            graphics.drawString(instructions, (GAME_WIDTH - stringWidth) / 2, GAME_HEIGHT / 2 + 50);
+            gameOver();
         } else {
-            // Draw the game elements
             draw(graphics);
         }
         g.drawImage(image, 0, 0, this);
+    }
+    public void gameOver(){
+        graphics.setColor(Color.black);
+        graphics.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+        // Display the winner's score
+        graphics.setColor(Color.WHITE);
+        graphics.setFont(new Font("Arial", Font.BOLD, 30));
+
+
+
+        String winnerScore;
+        int scoree;
+        if (score.player1 > score.player2) {
+            winnerScore = "Player 1 Wins! Score: " + score.player1;
+            scoree = score.player1;
+        } else {
+            winnerScore = "Player 2 Wins! Score: " + score.player2;
+            scoree = score.player2;
+        }
+        int currenScore = scoree;
+        File file = new File("score.txt");
+        Scanner sc;
+        try {
+            sc = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        int previousMaxScore = sc.nextInt();
+        System.out.println(previousMaxScore);
+        if(currenScore > previousMaxScore){
+            FileWriter fileWriter;
+            try {
+                fileWriter = new FileWriter("score.txt");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                fileWriter.write(Integer.toString(currenScore));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                fileWriter.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        int stringWidth = graphics.getFontMetrics().stringWidth(winnerScore);
+        graphics.drawString(winnerScore, (GAME_WIDTH - stringWidth) / 2, GAME_HEIGHT / 2);
+
+        // Display restart and exit instructions
+        graphics.setFont(new Font("Arial", Font.BOLD, 20));
+        String instructions = "Press 'R' to restart\n" +
+                "      'ESC' to exit\n" +
+                "      'H' to Home";
+        stringWidth = graphics.getFontMetrics().stringWidth(instructions);
+        graphics.drawString(instructions, (GAME_WIDTH - stringWidth) / 2, GAME_HEIGHT / 2 + 50);
     }
     public void draw(Graphics g){
         paddle1.draw(g);
@@ -148,6 +190,8 @@ public class GamePanel extends JPanel implements Runnable {
             }else if(e.getKeyCode() == KeyEvent.VK_SPACE && !isPause){
                 isPause = true;
                 //gameThread.interrupt();
+            }else if(!isRunning && e.getKeyCode() == 'H'){
+                new GameHomePage();
             }
 
         }
@@ -169,7 +213,7 @@ public class GamePanel extends JPanel implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (Math.abs(score.player1 - score.player2) == 3) {
+            if (Math.abs(score.player1 - score.player2) == 1) {
                 isRunning = false;
             }
             move();
