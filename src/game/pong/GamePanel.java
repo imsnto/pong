@@ -213,7 +213,7 @@ public class GamePanel extends JPanel implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (Math.abs(score.player1 - score.player2) == 1) {
+            if (Math.abs(score.player1 - score.player2) == 5) {
                 isRunning = false;
             }
             move();
