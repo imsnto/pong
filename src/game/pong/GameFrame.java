@@ -5,8 +5,8 @@ import java.awt.*;
 
 public class GameFrame extends JFrame {
     GamePanel panel;
-    GameFrame(){
-        panel = new GamePanel();
+    GameFrame(int paddleSize, int ballSpeed){
+        panel = new GamePanel(paddleSize, ballSpeed);
         this.add(panel);
         this.setTitle("Pong Game");
         this.setResizable(false);

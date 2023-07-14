@@ -19,7 +19,8 @@ public class GamePanel extends JPanel implements Runnable {
     static final Dimension SCREEN_SIZE = new Dimension(GAME_WIDTH, GAME_HEIGHT);
     static final int BALL_DIAMETER = 20;
     static final int PADDLE_WIDTH = 25;
-    static final int PADDLE_HEIGHT = 100;
+    static  int PADDLE_HEIGHT = 100;
+    int paddleSize , ballSpeed;
 
     Thread gameThread;
     Graphics graphics;
@@ -29,7 +30,10 @@ public class GamePanel extends JPanel implements Runnable {
     Ball ball;
     Score score;
 
-    GamePanel(){
+    GamePanel(int paddleSize, int ballSpeed){
+        this.paddleSize = paddleSize;
+        this.ballSpeed = ballSpeed;
+        PADDLE_HEIGHT = paddleSize;
         newPaddle();
         newBall();
         score = new Score(GAME_WIDTH, GAME_HEIGHT);
@@ -43,15 +47,15 @@ public class GamePanel extends JPanel implements Runnable {
         isRunning = true;
         score.player1 = 0;
         score.player2 = 0;
-        new GameFrame();
+        new GameFrame(paddleSize, ballSpeed);
     }
     public void newBall(){
         Random random = new Random();
-        ball = new Ball(GAME_WIDTH/2 - BALL_DIAMETER/2, random.nextInt(GAME_HEIGHT - BALL_DIAMETER), BALL_DIAMETER, BALL_DIAMETER);
+        ball = new Ball(GAME_WIDTH/2 - BALL_DIAMETER/2, random.nextInt(GAME_HEIGHT - BALL_DIAMETER), BALL_DIAMETER, BALL_DIAMETER, ballSpeed);
     }
     public void newPaddle(){
-        paddle1 = new Paddle(0, (GAME_HEIGHT/2) - (PADDLE_HEIGHT/2), PADDLE_WIDTH, PADDLE_HEIGHT , 1);
-        paddle2 = new Paddle(GAME_WIDTH-PADDLE_WIDTH, (GAME_HEIGHT/2) - (PADDLE_HEIGHT/2), PADDLE_WIDTH, PADDLE_HEIGHT, 2 );
+        paddle1 = new Paddle(0, (GAME_HEIGHT/2) - (PADDLE_HEIGHT/2), PADDLE_WIDTH, PADDLE_HEIGHT , 1, paddleSize);
+        paddle2 = new Paddle(GAME_WIDTH-PADDLE_WIDTH, (GAME_HEIGHT/2) - (PADDLE_HEIGHT/2), PADDLE_WIDTH, PADDLE_HEIGHT, 2 , paddleSize);
     }
     public void paint(Graphics g){
         Image image = createImage(getWidth(), getHeight());
@@ -191,6 +195,8 @@ public class GamePanel extends JPanel implements Runnable {
                 isPause = true;
                 //gameThread.interrupt();
             }else if(!isRunning && e.getKeyCode() == 'H'){
+                score.player1 = 0; score.player2  = 0;
+                isRunning = true;
                 new GameHomePage();
             }
 

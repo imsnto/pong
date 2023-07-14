@@ -6,10 +6,11 @@ import java.util.Random;
 public class Ball extends Rectangle {
     Random random;
     int xVelocity, yVelocity;
-    int initialSpeed = 4;
-    Ball(int x, int y, int width, int height){
+    int initialSpeed = 10;
+    Ball(int x, int y, int width, int height, int initialSpeed){
         super(x, y, width, height);
         random = new Random();
+        this.initialSpeed = initialSpeed;
         int randomXDirection = random.nextInt(2);
         if(randomXDirection == 0)
             randomXDirection--;

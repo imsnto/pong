@@ -17,6 +17,12 @@ public class GameHomePanel extends JPanel {
     JButton helpButton;
     JButton highScoreButton;
     JButton exitButton;
+    JButton difficulty;
+    JRadioButton easy, medium, hard;
+    ButtonGroup difficultyGroup;
+
+    int paddleSize = 150;
+    int ballSpeed = 4;
 
     BufferedImage backgroundImage;
 
@@ -30,6 +36,22 @@ public class GameHomePanel extends JPanel {
         helpButton = new JButton("Help");
         highScoreButton = new JButton("High Score");
         exitButton = new JButton("Exit");
+        difficulty = new JButton("Difficulty");
+
+        easy = new JRadioButton("Easy");
+        easy.setSelected(true);
+
+        medium = new JRadioButton("Medium");
+        hard = new JRadioButton("Hard");
+
+        difficultyGroup = new ButtonGroup();
+        difficultyGroup.add(easy);
+        difficultyGroup.add(medium);
+        difficultyGroup.add(hard);
+
+
+
+
 
 
         Font buttonFont = playButton.getFont();
@@ -39,23 +61,44 @@ public class GameHomePanel extends JPanel {
         helpButton.setFont(largerFont);
         highScoreButton.setFont(largerFont);
         exitButton.setFont(largerFont);
+        difficulty.setFont(largerFont);
+        easy.setFont(buttonFont);
+        medium.setFont(buttonFont);
+        hard.setFont(buttonFont);
 
         playButton.setBounds(400, 170, 200, 50);
-        helpButton.setBounds(400, 220, 200, 50);
-        highScoreButton.setBounds(400, 270, 200, 50);
-        exitButton.setBounds(400, 320, 200, 50);
+        difficulty.setBounds(400, 220, 200, 50);
+
+        easy.setBounds(600, 220, 100, 50);
+        medium.setBounds(700, 220, 100, 50);
+        hard.setBounds(800, 220, 100, 50);
+
+        helpButton.setBounds(400, 270, 200, 50);
+        highScoreButton.setBounds(400, 320, 200, 50);
+        exitButton.setBounds(400, 370, 200, 50);
 
 
         playButton.setBorderPainted(false);
         helpButton.setBorderPainted(false);
         highScoreButton.setBorderPainted(false);
         exitButton.setBorderPainted(false);
+        difficulty.setBorderPainted(false);
+        easy.setBorderPainted(false);
+        medium.setBorderPainted(false);
+        hard.setBorderPainted(false);
+
 
 
         playButton.setContentAreaFilled(false);
         helpButton.setContentAreaFilled(false);
         highScoreButton.setContentAreaFilled(false);
         exitButton.setContentAreaFilled(false);
+        difficulty.setContentAreaFilled(false);
+        easy.setContentAreaFilled(false);
+        medium.setContentAreaFilled(false);
+        hard.setContentAreaFilled(false);
+
+
 
 
         try {
@@ -67,7 +110,41 @@ public class GameHomePanel extends JPanel {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                new GameFrame();
+                new GameFrame(paddleSize, ballSpeed);
+            }
+        });
+
+        difficulty.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                showRadioButton();
+                easy.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        paddleSize = 150;
+                        ballSpeed = 4;
+                    }
+                });
+                medium.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        paddleSize = 100;
+                        ballSpeed = 6;
+                    }
+                });
+                hard.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        paddleSize = 70;
+                        ballSpeed = 10;
+                    }
+                });
+            }
+
+            private void showRadioButton() {
+                add(easy);
+                add(medium);
+                add(hard);
             }
         });
 
@@ -96,6 +173,8 @@ public class GameHomePanel extends JPanel {
         add(helpButton);
         add(highScoreButton);
         add(exitButton);
+        add(difficulty);
+
     }
     private void showHighScore(){
         File file = new File("score.txt");
