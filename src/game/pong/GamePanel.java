@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.Key;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -184,6 +185,10 @@ public class GamePanel extends JPanel implements Runnable {
         public void keyPressed(KeyEvent e){
             paddle1.keyPressed(e);
             paddle2.keyPressed(e);
+
+            if(e.getKeyCode() == KeyEvent.VK_E && isRunning){
+                isRunning = false;
+            }
 
             if (e.getKeyCode() == KeyEvent.VK_R && !isRunning) {
                 restartGame();
